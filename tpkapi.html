@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokémon Informações</title>
+    <style>
+        img {
+            width: 200px;
+            height: 200px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Informações sobre o Pokémon</h1>
+    <div id="pokemon-info">
+        <p>Nome: <span id="name"></span></p>
+        <p>Tipo: <span id="type"></span></p>
+        <p>Peso: <span id="weight"></span></p>
+        <p>Altura: <span id="height"></span></p>
+        <img id="sprite" src="" alt="Pokémon">
+    </div>
+
+    <script>
+        fetch('https://pokeapi.co/api/v2/pokemon/charmander')
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('name').textContent = data.name;
+            document.getElementById('type').textContent = data.types[0].type.name;
+            document.getElementById('weight').textContent = data.weight;
+            document.getElementById('height').textContent = data.height;
+            document.getElementById('sprite').src = data.sprites.front_default;
+        })
+        .catch(error => console.error('Erro ao carregar dados do Pokémon:', error));
+    </script>
+</body>
+</html>

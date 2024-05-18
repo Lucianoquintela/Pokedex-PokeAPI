@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokédex</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/International_Pok%C3%A9mon_logo.svg/1200px-International_Pok%C3%A9mon_logo.svg.png" class="logo-pokemon"/>
+    <h1>Pokédex</h1>
+    <input type="search" id="searchInput" placeholder="Pesquisar"/>
+    
+    <div id="pokemon-list"></div>
+<header>
+<div>Criado por Luciano Quintela</div>
+</header>
+    <script>
+        fetch('https://pokeapi.co/api/v2/pokemon/?limit=20')
+        .then(response => response.json())
+        .then(data => {
+            const pokemonList = document.getElementById('pokemon-list');
+            data.results.forEach((pokemon, index) => {
+                fetchPokemonData(pokemon.url)
+                .then(pokemonData => {
+                    fetchPokemonDescription(pokemonData.species.url)
+                    .then(description => {
+                        const card = createPokemonCard(pokemonData, index + 1, description);
+                        pokemonList.appendChild(card);
+                    });
+                });
+            });
+        })
+        .catch(error => console.error('Erro ao carregar lista de Pokémon:', error));
+
+        function fetchPokemonData(url) {
+            return fetch(url)
+            .then(response => response.json());
+        }
+
+        function fetchPokemonDescription(url) {
+            return fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                const description = data.flavor_text_entries.find(entry => entry.language.name === 'en');
+                return description.flavor_text;
+            });
+        }
+
+        function createPokemonCard(pokemon, number, description) {
+            const card = document.createElement('div');
+            card.classList.add('pokemon-card');
+
+            const numberElement = document.createElement('p');
+            numberElement.textContent = `#${number}`;
+            card.appendChild(numberElement);
+
+            const name = document.createElement('h2');
+            name.textContent = pokemon.name;
+            card.appendChild(name);
+
+            const sprite = document.createElement('img');
+            sprite.src = pokemon.sprites.front_default;
+            sprite.alt = pokemon.name;
+            card.appendChild(sprite);
+
+            const types = document.createElement('p');
+            types.textContent = 'Tipo: ' + pokemon.types.map(type => type.type.name).join(', ');
+            card.appendChild(types);
+
+            const descriptionElement = document.createElement('p');
+            descriptionElement.textContent = description;
+            card.appendChild(descriptionElement);
+
+            return card;
+        }
+    </script>
+</body>
+
+
+
+</html>
+
+
+<style>
+body{
+    background-color:black;
+    color:white;
+    
+}
+
+input{
+    width:300px;
+    display:flex;
+    margin:auto;
+    padding:18px;
+    border-radius:10px;    
+    font-weight:bold;
+    font-size:18px;
+    margin-top:30px;
+}
+
+
+h1{
+    border:solid 2px gold;
+    text-align:center;
+    width:160px;
+    display:block;
+    margin:auto;
+    margin-top:30px;
+}
+
+.logo-pokemon{
+    width:90%;
+    height:130px;
+    display:block;
+    margin:auto;
+    margin-top:10px;
+    
+}
+
+#pokemon-list{
+    margin-top:50px;
+    display:flex;
+    background-color:;
+    flex-direction:column;
+    
+    align-items:center;
+}
+.pokemon-card {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    margin: 10px;
+    display: inline-block;
+    width: 250px;
+    background-color:Tomato;
+    transition: 0.2s ease-in-out;
+    
+}
+
+.pokemon-card:hover{
+    
+    transform: scale(1.05);
+    
+    
+    
+    background: linear-gradient(to right, blue, green);
+    /* Para navegadores mais antigos */
+    background: -webkit-linear-gradient(left, blue, green);
+    background: -moz-linear-gradient(left, blue, green);
+    background: -o-linear-gradient(left, blue, green);
+
+}
+
+.pokemon-card img {
+    width: 100%;
+}
+
+.pokemon-card p {
+    margin: 5px 0;
+}
+
+.pokemon-card h2 {
+    margin: 0;
+}
+
+header{
+    width:100%;
+    height:100px;
+    background-color:grey;
+    display:flex;
+    margin-top:100px;
+    justify-content:center;
+    align-items:center;
+    font-weight:bold;
+}
+</style>
